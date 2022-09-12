@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Button, Linking } from 'react-native';
 import Text from './Text';
 import theme from '../theme';
 
@@ -42,9 +42,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
   },
+  btn: {
+    marginTop: 15,
+  },
 });
 
-const parseThousands = (value) => {
+export const parseThousands = (value) => {
   return value >= 1000 ? `${Math.round(value / 100) / 10}k` : String(value);
 };
 
@@ -53,44 +56,70 @@ const RepositoryHeader = ({ item }) => {
     <View style={styles.header}>
       <Image style={styles.img} source={{ uri: item.ownerAvatarUrl }} />
       <View style={styles.headerContainer}>
-        <Text fontWeight="bold">{item.fullName}</Text>
-        <Text style={styles.headerText}>{item.description}</Text>
-        <Text style={styles.language}>{item.language}</Text>
+        <Text fontWeight="bold" testID="fullName">
+          {item.fullName}
+        </Text>
+        <Text style={styles.headerText} testID="description">
+          {item.description}
+        </Text>
+        <Text style={styles.language} testID="language">
+          {item.language}
+        </Text>
       </View>
     </View>
   );
 };
 
-const RepositoryItem = ({ item }) => {
+const RepositoryItem = ({ item, single }) => {
   return (
-    <View style={styles.container} t>
+    <View style={styles.container} testID="repositoryItem">
       <RepositoryHeader item={item} />
       <View style={styles.stats}>
         <View>
-          <Text style={styles.alignCenter} fontWeight="bold">
+          <Text
+            style={styles.alignCenter}
+            fontWeight="bold"
+            testID="stargazers"
+          >
             {parseThousands(item.stargazersCount)}
           </Text>
           <Text>Stars</Text>
         </View>
         <View>
-          <Text style={styles.alignCenter} fontWeight="bold">
+          <Text style={styles.alignCenter} fontWeight="bold" testID="forks">
             {parseThousands(item.forksCount)}
           </Text>
           <Text>Forks</Text>
         </View>
         <View>
-          <Text style={styles.alignCenter} fontWeight="bold">
+          <Text
+            style={styles.alignCenter}
+            fontWeight="bold"
+            testID="reviewCount"
+          >
             {item.reviewCount}
           </Text>
           <Text>Reviews</Text>
         </View>
         <View>
-          <Text style={styles.alignCenter} fontWeight="bold">
+          <Text
+            style={styles.alignCenter}
+            fontWeight="bold"
+            testID="ratingAverage"
+          >
             {item.ratingAverage}
           </Text>
           <Text>Rating</Text>
         </View>
       </View>
+      {single && (
+        <View style={styles.btn}>
+          <Button
+            onPress={() => Linking.openURL(item.url)}
+            title="Open in GitHub"
+          />
+        </View>
+      )}
     </View>
   );
 };
